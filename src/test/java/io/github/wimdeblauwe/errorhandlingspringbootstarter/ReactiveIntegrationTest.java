@@ -2,6 +2,7 @@ package io.github.wimdeblauwe.errorhandlingspringbootstarter;
 
 import io.github.wimdeblauwe.errorhandlingspringbootstarter.reactive.ReactiveErrorHandlingConfiguration;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -13,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.Locale;
 
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
@@ -30,9 +33,14 @@ public class ReactiveIntegrationTest {
     @Autowired
     WebTestClient webTestClient;
 
+    @BeforeEach
+    void setLocale() {
+        Locale.setDefault(Locale.US);
+    }
+
     @Test
     @WithMockUser
-    void testRuntimeException() throws Exception {
+    void testRuntimeException() {
         webTestClient.get()
                      .uri("/integration-test/runtime")
                      .accept(MediaType.ALL)
@@ -42,7 +50,7 @@ public class ReactiveIntegrationTest {
 
     @Test
     @WithMockUser
-    void testExceptionWithBadRequestStatus() throws Exception {
+    void testExceptionWithBadRequestStatus() {
         webTestClient.get()
                      .uri("/integration-test/bad-request")
                      .exchange()
@@ -51,7 +59,7 @@ public class ReactiveIntegrationTest {
 
     @Test
     @WithMockUser
-    void testApplicationException() throws Exception {
+    void testApplicationException() {
         webTestClient.get()
                      .uri("/integration-test/application-request")
                      .exchange()
